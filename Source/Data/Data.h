@@ -11,7 +11,7 @@ namespace dm
 
 //! \brief The data.
 class Data {
-  public:
+public:
     static Data *instance();
 
     Data();
@@ -22,7 +22,7 @@ class Data {
     Data &operator=(const Data &) = delete;
     Data(const Data &) = delete;
 
-  private:
+private:
     dm::Mesh *currentMesh;
 };
 

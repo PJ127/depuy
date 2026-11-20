@@ -14,15 +14,15 @@ namespace gui
 class MainWidget : public QWidget, Ui_MainWidget {
     Q_OBJECT
 
-  public:
+public:
     MainWidget(QWidget *parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
     virtual ~MainWidget();
 
-  public slots:
+public slots:
     void accepted();
 
-  private:
+private:
     QFileDialog *fileDialog;
 };
 

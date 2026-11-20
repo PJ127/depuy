@@ -27,15 +27,15 @@ struct Triangle {
 
 //! Triangular mesh
 class Mesh {
-  public:
+public:
     Mesh();
     virtual ~Mesh();
 
-  public:
+public:
     //! Loads a STL mesh
     bool load(const QString &path);
 
-  public:
+public:
     std::vector<Triangle> triangles;
     std::vector<Node *> nodes;
 };

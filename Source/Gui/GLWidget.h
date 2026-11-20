@@ -11,28 +11,28 @@ namespace gui {
 class GLWidget : public QOpenGLWidget {
     Q_OBJECT
 
-  public:
+public:
     GLWidget(QWidget *parent = 0);
     ~GLWidget();
 
-  public:
+public:
     void updateObject();
 
-  public slots:
+public slots:
     void setXRotation(int angle);
     void setYRotation(int angle);
 
     void setXTranslation(double translation);
     void setYTranslation(double translation);
 
-  signals:
+signals:
     void xRotationChanged(int angle);
     void yRotationChanged(int angle);
 
     void xTranlationChanged(double translation);
     void yTranlationChanged(double translation);
 
-  protected:
+protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int width, int height);
@@ -40,7 +40,7 @@ class GLWidget : public QOpenGLWidget {
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
 
-  private:
+private:
     int xRot;
     int yRot;
     int zRot;
@@ -56,7 +56,7 @@ class GLWidget : public QOpenGLWidget {
 
     GLuint object;
 
-  private:
+private:
     void drawAxes(const int axisLength);
     void drawWireframe(const dm::Mesh *mesh);
     void drawMesh(const dm::Mesh *mesh);
