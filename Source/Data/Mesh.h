@@ -34,8 +34,12 @@ public:
     virtual ~Mesh();
 
 public:
-    //! Loads a STL mesh
+    //! Loads a mesh (format deduced from the file extension: STL, OFF).
+    //! Replaces the current content; the mesh is left empty on failure.
     bool load(const QString &path);
+
+    //! Removes all triangles and vertices
+    void clear();
 
 public:
     std::vector<Triangle> triangles;
