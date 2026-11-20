@@ -20,20 +20,20 @@ dm::Mesh::Mesh()
 dm::Mesh::~Mesh()
 //-----------------------------------------------------------------------------
 {
-    m_triangles.clear();
-    for (size_t i = 0; i < m_nodes.size(); ++i) {
-        delete m_nodes[i];
+    mTriangles.clear();
+    for (size_t i = 0; i < mNodes.size(); ++i) {
+        delete mNodes[i];
     }
-    m_nodes.clear();
+    mNodes.clear();
 }
 
 //-----------------------------------------------------------------------------
-bool dm::Mesh::load(const QString &p_file)
+bool dm::Mesh::load(const QString &pFile)
 //-----------------------------------------------------------------------------
 {
-    QFile file(p_file);
+    QFile file(pFile);
     if (!file.open(QFile::Text | QFile::ReadOnly)) {
-        qCritical() << "Failed to open file " << p_file;
+        qCritical() << "Failed to open file " << pFile;
         return false;
     }
     QTextStream stream(&file);
@@ -137,11 +137,11 @@ bool dm::Mesh::load(const QString &p_file)
             }
 
             tri.nodes[i] = new Node(P);
-            m_nodes.push_back(tri.nodes[i]);
+            mNodes.push_back(tri.nodes[i]);
         }
 
         // add the new triangle
-        m_triangles.push_back(tri);
+        mTriangles.push_back(tri);
 
         // 6th line: 'endloop'
         {
@@ -166,8 +166,8 @@ bool dm::Mesh::load(const QString &p_file)
         }
     }
 
-    m_triangles.shrink_to_fit();
-    m_nodes.shrink_to_fit();
+    mTriangles.shrink_to_fit();
+    mNodes.shrink_to_fit();
 
     return true;
 }

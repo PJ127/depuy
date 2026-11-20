@@ -22,13 +22,13 @@ class Data {
     Data();
     ~Data() {}
 
-    dm::Mesh *mesh() { return m_mesh; }
+    dm::Mesh *mesh() { return mMesh; }
 
     Data &operator=(const Data &) = delete;
     Data(const Data &) = delete;
 
   private:
-    dm::Mesh *m_mesh;
+    dm::Mesh *mMesh;
 };
 
 // -----------------------------------------------------------------------------

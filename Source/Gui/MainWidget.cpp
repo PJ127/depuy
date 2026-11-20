@@ -14,11 +14,11 @@ gui::MainWidget::MainWidget(QWidget *parent /* = 0*/,
 {
     setupUi(this);
 
-    m_fileDialog = new QFileDialog();
-    m_fileDialog->hide();
+    mFileDialog = new QFileDialog();
+    mFileDialog->hide();
 
-    connect(this->m_loadButton, SIGNAL(clicked()), m_fileDialog, SLOT(show()));
-    connect(m_fileDialog, SIGNAL(accepted()), this, SLOT(accepted()));
+    connect(this->mLoadButton, SIGNAL(clicked()), mFileDialog, SLOT(show()));
+    connect(mFileDialog, SIGNAL(accepted()), this, SLOT(accepted()));
 }
 
 //------------------------------------------------------------------------------
@@ -30,9 +30,9 @@ gui::MainWidget::~MainWidget()
 void gui::MainWidget::accepted()
 //------------------------------------------------------------------------------
 {
-    dm::Data::instance()->mesh()->load(m_fileDialog->selectedFiles().first());
+    dm::Data::instance()->mesh()->load(mFileDialog->selectedFiles().first());
 
-    m_glWidget->updateObject();
-    m_glWidget->update();
-    // m_glWidget->updateGL();
+    mGlWidget->updateObject();
+    mGlWidget->update();
+    // mGlWidget->updateGL();
 }

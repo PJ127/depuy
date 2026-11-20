@@ -29,7 +29,7 @@ class MainWidget : public QWidget, Ui_MainWidget {
     void accepted();
 
   private:
-    QFileDialog *m_fileDialog;
+    QFileDialog *mFileDialog;
 };
 
 //------------------------------------------------------------------------------

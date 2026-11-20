@@ -21,7 +21,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_8">
       <item>
-       <widget class="gui::GLWidget" name="m_glWidget" native="true">
+       <widget class="gui::GLWidget" name="mGlWidget" native="true">
         <property name="minimumSize">
          <size>
           <width>256</width>
@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="m_loadButton">
+       <widget class="QPushButton" name="mLoadButton">
         <property name="text">
          <string>Load File</string>
         </property>

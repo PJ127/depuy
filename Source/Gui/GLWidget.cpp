@@ -26,7 +26,7 @@ gui::GLWidget::GLWidget(QWidget *parent)
     yRot = 0;
     zRot = 0;
 
-    m_scaling = 1.0;
+    mScaling = 1.0;
 
     xTranslation = 0;
     yTranslation = 0;
@@ -125,7 +125,7 @@ void gui::GLWidget::paintGL()
     glLoadIdentity();
 
     glTranslated(xTranslation, -yTranslation, zTranslation);
-    glScalef(m_scaling, m_scaling, m_scaling);
+    glScalef(mScaling, mScaling, mScaling);
     glRotated(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotated(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
@@ -217,7 +217,7 @@ void gui::GLWidget::wheelEvent(QWheelEvent *event)
 {
     double numDegrees = -event->angleDelta().y() / 8.0;
     double numSteps = numDegrees / 15.0;
-    m_scaling *= std::pow(1.125, numSteps);
+    mScaling *= std::pow(1.125, numSteps);
     update();
 }
 
@@ -253,16 +253,16 @@ void gui::GLWidget::drawBox(const double *bounds)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::drawMesh(const dm::Mesh *p_mesh)
+void gui::GLWidget::drawMesh(const dm::Mesh *pMesh)
 //------------------------------------------------------------------------------
 {
-    if (!p_mesh)
+    if (!pMesh)
         return;
 
     glBegin(GL_TRIANGLES);
-    size_t nbT = p_mesh->m_triangles.size();
+    size_t nbT = pMesh->mTriangles.size();
     for (size_t i = 0; i < nbT; i++) {
-        const dm::Triangle &tr = p_mesh->m_triangles[i];
+        const dm::Triangle &tr = pMesh->mTriangles[i];
         for (unsigned int s = 0; s < 3; s++) {
             glNormal3dv(tr.normal);
             glVertex3dv(tr.nodes[s]->coo);
@@ -272,15 +272,15 @@ void gui::GLWidget::drawMesh(const dm::Mesh *p_mesh)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::drawWireframe(const dm::Mesh *p_mesh)
+void gui::GLWidget::drawWireframe(const dm::Mesh *pMesh)
 //------------------------------------------------------------------------------
 {
-    if (!p_mesh)
+    if (!pMesh)
         return;
 
-    size_t nbT = p_mesh->m_triangles.size();
+    size_t nbT = pMesh->mTriangles.size();
     for (size_t i = 0; i < nbT; i++) {
-        const dm::Triangle &tr = p_mesh->m_triangles[i];
+        const dm::Triangle &tr = pMesh->mTriangles[i];
         glBegin(GL_LINE_LOOP);
         glVertex3dv(tr.nodes[0]->coo);
         glVertex3dv(tr.nodes[1]->coo);
@@ -290,22 +290,22 @@ void gui::GLWidget::drawWireframe(const dm::Mesh *p_mesh)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::drawCoorSyst(const int p_size)
+void gui::GLWidget::drawCoorSyst(const int pSize)
 //------------------------------------------------------------------------------
 {
     glBegin(GL_LINES);
 
     glColor3f(1.f, 0.f, 0.f);
     glVertex3d(0., 0., 0.);
-    glVertex3d(p_size, 0., 0.);
+    glVertex3d(pSize, 0., 0.);
 
     glColor3f(0.f, 1.f, 0.f);
     glVertex3d(0., 0., 0.);
-    glVertex3d(0., p_size, 0.);
+    glVertex3d(0., pSize, 0.);
 
     glColor3f(0.f, 0.f, 1.f);
     glVertex3d(0., 0., 0.);
-    glVertex3d(0., 0., p_size);
+    glVertex3d(0., 0., pSize);
 
     glEnd();
 }

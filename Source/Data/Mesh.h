@@ -48,11 +48,11 @@ class Mesh {
 
   public:
     //! Loads a STL mesh
-    bool load(const QString &p_file);
+    bool load(const QString &pFile);
 
   public:
-    std::vector<Triangle> m_triangles;
-    std::vector<Node *> m_nodes;
+    std::vector<Triangle> mTriangles;
+    std::vector<Node *> mNodes;
 };
 
 //------------------------------------------------------------------------------

@@ -50,7 +50,7 @@ class GLWidget : public QOpenGLWidget {
     double yTranslation;
     double zTranslation;
 
-    double m_scaling;
+    double mScaling;
 
     QPoint clickedPos;
     QPoint lastPos;
@@ -58,9 +58,9 @@ class GLWidget : public QOpenGLWidget {
     GLuint object;
 
   private:
-    void drawCoorSyst(const int p_size);
-    void drawWireframe(const dm::Mesh *p_mesh);
-    void drawMesh(const dm::Mesh *p_mesh);
+    void drawCoorSyst(const int pSize);
+    void drawWireframe(const dm::Mesh *pMesh);
+    void drawMesh(const dm::Mesh *pMesh);
     void drawBox(const double *bounds);
     GLuint makeObject();
 
