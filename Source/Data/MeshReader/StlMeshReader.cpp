@@ -35,27 +35,24 @@ bool dm::StlMeshReader::read(QTextStream &stream, Mesh &mesh)
         if (tokens[0].toUpper() == "ENDSOLID") {
             break;
         }
-        if (tokens[0].toUpper() != "FACET") {
-            return false;
-        }
 
-        Vertex normal;
-        if (!parseVertex(tokens, normal, "facet normal")) {
+        QList<double> normal;
+        if (!parseLine(tokens, {"facet", "normal"}, 3, &normal)) {
             return false;
         }
-        tri.normal[0] = normal.x;
-        tri.normal[1] = normal.y;
-        tri.normal[2] = normal.z;
+        tri.normal[0] = normal[0];
+        tri.normal[1] = normal[1];
+        tri.normal[2] = normal[2];
 
         // 2nd line: 'outer loop'
-        if (readTokens(stream).join(' ').toUpper() != "OUTER LOOP") {
+        if (!readLine(stream, {"outer", "loop"}, 0)) {
             return false;
         }
 
         // 3rd to 5th lines: 'vertex x y z'
         for (unsigned i = 0; i < 3; ++i) {
             Vertex vertex;
-            if (!readVertex(stream, vertex, "vertex")) {
+            if (!readVertex(stream, vertex, {"vertex"})) {
                 return false;
             }
             // The mesh owns the vertex; the triangle only refers to it.
@@ -66,12 +63,12 @@ bool dm::StlMeshReader::read(QTextStream &stream, Mesh &mesh)
         mesh.triangles.push_back(tri);
 
         // 6th line: 'endloop'
-        if (readTokens(stream).join(' ').toUpper() != "ENDLOOP") {
+        if (!readLine(stream, {"endloop"}, 0)) {
             return false;
         }
 
         // 7th and last line: 'endfacet'
-        if (readTokens(stream).join(' ').toUpper() != "ENDFACET") {
+        if (!readLine(stream, {"endfacet"}, 0)) {
             return false;
         }
     }

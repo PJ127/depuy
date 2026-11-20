@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QList>
 #include <QString>
 #include <QStringList>
 
@@ -27,16 +28,19 @@ protected:
     //! Returns an empty list at the end of the file.
     static QStringList readTokens(QTextStream &stream);
 
-    //! Reads the next line of \p stream as "[prefix] x y z" into \p vertex.
-    //! Returns false if the line does not match (see parseVertex).
-    static bool readVertex(QTextStream &stream, Vertex &vertex,
-                           const QString &prefix = QString());
+    //! Checks that \p tokens are the words of \p prefix (case-insensitive)
+    //! followed by \p nbFloats numbers, stored in \p values if not null.
+    //! Extra tokens are ignored. Returns false if the line does not match.
+    static bool parseLine(const QStringList &tokens, const QStringList &prefix,
+                          int nbFloats, QList<double> *values = nullptr);
 
-    //! Same as readVertex, from the tokens of a line that was already read.
-    //! \p prefix is a list of words (e.g. "vertex", "facet normal") that must
-    //! match case-insensitively. Extra tokens are ignored.
-    static bool parseVertex(const QStringList &tokens, Vertex &vertex,
-                            const QString &prefix = QString());
+    //! Reads the next line of \p stream and parses it with parseLine.
+    static bool readLine(QTextStream &stream, const QStringList &prefix,
+                         int nbFloats, QList<double> *values = nullptr);
+
+    //! Reads a line "[prefix] x y z" into \p vertex.
+    static bool readVertex(QTextStream &stream, Vertex &vertex,
+                           const QStringList &prefix = QStringList());
 };
 
 //------------------------------------------------------------------------------

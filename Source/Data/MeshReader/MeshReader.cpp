@@ -20,35 +20,56 @@ QStringList dm::MeshReader::readTokens(QTextStream &stream)
 }
 
 //------------------------------------------------------------------------------
-bool dm::MeshReader::readVertex(QTextStream &stream, Vertex &vertex,
-                                const QString &prefix)
+bool dm::MeshReader::parseLine(const QStringList &tokens,
+                               const QStringList &prefix, int nbFloats,
+                               QList<double> *values)
 //------------------------------------------------------------------------------
 {
-    return parseVertex(readTokens(stream), vertex, prefix);
-}
-
-//------------------------------------------------------------------------------
-bool dm::MeshReader::parseVertex(const QStringList &tokens, Vertex &vertex,
-                                 const QString &prefix)
-//------------------------------------------------------------------------------
-{
-    const QStringList prefixWords = prefix.split(' ', Qt::SkipEmptyParts);
-    const int nbPrefixWords = prefixWords.size();
-    if (tokens.size() < nbPrefixWords + 3) {
+    const int nbPrefixWords = prefix.size();
+    if (tokens.size() < nbPrefixWords + nbFloats) {
         return false;
     }
 
     for (int i = 0; i < nbPrefixWords; ++i) {
-        if (tokens[i].toLower() != prefixWords[i].toLower()) {
+        if (tokens[i].compare(prefix[i], Qt::CaseInsensitive) != 0) {
             return false;
         }
     }
 
-    bool xIsOk = false;
-    bool yIsOk = false;
-    bool zIsOk = false;
-    vertex.x = tokens[nbPrefixWords].toDouble(&xIsOk);
-    vertex.y = tokens[nbPrefixWords + 1].toDouble(&yIsOk);
-    vertex.z = tokens[nbPrefixWords + 2].toDouble(&zIsOk);
-    return xIsOk && yIsOk && zIsOk;
+    QList<double> result;
+    for (int i = 0; i < nbFloats; ++i) {
+        bool isOk = false;
+        result.push_back(tokens[nbPrefixWords + i].toDouble(&isOk));
+        if (!isOk) {
+            return false;
+        }
+    }
+
+    if (values) {
+        *values = result;
+    }
+    return true;
+}
+
+//------------------------------------------------------------------------------
+bool dm::MeshReader::readLine(QTextStream &stream, const QStringList &prefix,
+                              int nbFloats, QList<double> *values)
+//------------------------------------------------------------------------------
+{
+    return parseLine(readTokens(stream), prefix, nbFloats, values);
+}
+
+//------------------------------------------------------------------------------
+bool dm::MeshReader::readVertex(QTextStream &stream, Vertex &vertex,
+                                const QStringList &prefix)
+//------------------------------------------------------------------------------
+{
+    QList<double> coordinates;
+    if (!readLine(stream, prefix, 3, &coordinates)) {
+        return false;
+    }
+    vertex.x = coordinates[0];
+    vertex.y = coordinates[1];
+    vertex.z = coordinates[2];
+    return true;
 }
