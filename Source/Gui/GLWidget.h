@@ -19,18 +19,8 @@ public:
     void updateObject();
 
 public slots:
-    void setXRotation(int angle);
-    void setYRotation(int angle);
-
-    void setXTranslation(double translation);
-    void setYTranslation(double translation);
-
-signals:
-    void xRotationChanged(int angle);
-    void yRotationChanged(int angle);
-
-    void xTranlationChanged(double translation);
-    void yTranlationChanged(double translation);
+    void setRotation(int xAngle, int yAngle);
+    void setTranslation(double x, double y);
 
 protected:
     void initializeGL();

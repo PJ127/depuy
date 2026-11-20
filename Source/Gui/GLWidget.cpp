@@ -48,47 +48,25 @@ static void qNormalizeAngle(int &angle)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::setXTranslation(double translation)
+void gui::GLWidget::setTranslation(double x, double y)
 //------------------------------------------------------------------------------
 {
-    if (translation != xTranslation) {
-        xTranslation = translation;
-        emit xTranlationChanged(xTranslation);
+    if (x != xTranslation || y != yTranslation) {
+        xTranslation = x;
+        yTranslation = y;
         update();
     }
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::setYTranslation(double translation)
+void gui::GLWidget::setRotation(int xAngle, int yAngle)
 //------------------------------------------------------------------------------
 {
-    if (translation != yTranslation) {
-        yTranslation = translation;
-        emit yTranlationChanged(yTranslation);
-        update();
-    }
-}
-
-//------------------------------------------------------------------------------
-void gui::GLWidget::setXRotation(int angle)
-//------------------------------------------------------------------------------
-{
-    qNormalizeAngle(angle);
-    if (angle != xRot) {
-        xRot = angle;
-        emit xRotationChanged(angle);
-        update();
-    }
-}
-
-//------------------------------------------------------------------------------
-void gui::GLWidget::setYRotation(int angle)
-//------------------------------------------------------------------------------
-{
-    qNormalizeAngle(angle);
-    if (angle != yRot) {
-        yRot = angle;
-        emit yRotationChanged(angle);
+    qNormalizeAngle(xAngle);
+    qNormalizeAngle(yAngle);
+    if (xAngle != xRot || yAngle != yRot) {
+        xRot = xAngle;
+        yRot = yAngle;
         update();
     }
 }
@@ -199,11 +177,9 @@ void gui::GLWidget::mouseMoveEvent(QMouseEvent *event)
     int dy = event->y() - lastPos.y();
 
     if (event->buttons() & Qt::LeftButton) {
-        setXRotation(xRot + 8 * dy);
-        setYRotation(yRot + 8 * dx);
+        setRotation(xRot + 8 * dy, yRot + 8 * dx);
     } else if (event->buttons() & Qt::RightButton) {
-        setXTranslation(xTranslation + dx);
-        setYTranslation(yTranslation + dy);
+        setTranslation(xTranslation + dx, yTranslation + dy);
     }
     lastPos = event->pos();
 }
@@ -292,20 +268,22 @@ void gui::GLWidget::drawWireframe(const dm::Mesh *mesh)
 void gui::GLWidget::drawAxes(const int axisLength)
 //------------------------------------------------------------------------------
 {
+    // One color per axis: X red, Y green, Z blue
+    static const GLfloat colors[3][3] = {
+        {1.f, 0.f, 0.f},
+        {0.f, 1.f, 0.f},
+        {0.f, 0.f, 1.f},
+    };
+
     glBegin(GL_LINES);
+    for (int axis = 0; axis < 3; axis++) {
+        double end[3] = {0., 0., 0.};
+        end[axis] = axisLength;
 
-    glColor3f(1.f, 0.f, 0.f);
-    glVertex3d(0., 0., 0.);
-    glVertex3d(axisLength, 0., 0.);
-
-    glColor3f(0.f, 1.f, 0.f);
-    glVertex3d(0., 0., 0.);
-    glVertex3d(0., axisLength, 0.);
-
-    glColor3f(0.f, 0.f, 1.f);
-    glVertex3d(0., 0., 0.);
-    glVertex3d(0., 0., axisLength);
-
+        glColor3fv(colors[axis]);
+        glVertex3d(0., 0., 0.);
+        glVertex3dv(end);
+    }
     glEnd();
 }
 
