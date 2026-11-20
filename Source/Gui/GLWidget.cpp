@@ -42,10 +42,12 @@ gui::GLWidget::~GLWidget()
 static void qNormalizeAngle(int &angle)
 //------------------------------------------------------------------------------
 {
-    while (angle < 0)
+    while (angle < 0) {
         angle += 360 * 16;
-    while (angle > 360 * 16)
+    }
+    while (angle > 360 * 16) {
         angle -= 360 * 16;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -256,8 +258,9 @@ void gui::GLWidget::drawBox(const double *bounds)
 void gui::GLWidget::drawMesh(const dm::Mesh *pMesh)
 //------------------------------------------------------------------------------
 {
-    if (!pMesh)
+    if (!pMesh) {
         return;
+    }
 
     glBegin(GL_TRIANGLES);
     size_t nbT = pMesh->mTriangles.size();
@@ -275,8 +278,9 @@ void gui::GLWidget::drawMesh(const dm::Mesh *pMesh)
 void gui::GLWidget::drawWireframe(const dm::Mesh *pMesh)
 //------------------------------------------------------------------------------
 {
-    if (!pMesh)
+    if (!pMesh) {
         return;
+    }
 
     size_t nbT = pMesh->mTriangles.size();
     for (size_t i = 0; i < nbT; i++) {

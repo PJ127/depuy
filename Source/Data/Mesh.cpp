@@ -73,14 +73,17 @@ bool dm::Mesh::load(const QString &pFile)
                 // read the normal
                 bool normalIsOk = false;
                 tri.normal[0] = tokens[2].toDouble(&normalIsOk);
-                if (!normalIsOk)
+                if (!normalIsOk) {
                     return false;
+                }
                 tri.normal[1] = tokens[3].toDouble(&normalIsOk);
-                if (!normalIsOk)
+                if (!normalIsOk) {
                     return false;
+                }
                 tri.normal[2] = tokens[4].toDouble(&normalIsOk);
-                if (!normalIsOk)
+                if (!normalIsOk) {
                     return false;
+                }
                 // double norm = sqrt(tri.normal[0]*tri.normal[0] +
                 // tri.normal[1]*tri.normal[1] + tri.normal[2]*tri.normal[2]);
                 // qDebug() << norm << endl;
@@ -126,14 +129,17 @@ bool dm::Mesh::load(const QString &pFile)
             {
                 bool vertexIsOk = false;
                 P.coo[0] = tokens[1].toDouble(&vertexIsOk);
-                if (!vertexIsOk)
+                if (!vertexIsOk) {
                     return false;
+                }
                 P.coo[1] = tokens[2].toDouble(&vertexIsOk);
-                if (!vertexIsOk)
+                if (!vertexIsOk) {
                     return false;
+                }
                 P.coo[2] = tokens[3].toDouble(&vertexIsOk);
-                if (!vertexIsOk)
+                if (!vertexIsOk) {
                     return false;
+                }
             }
 
             tri.nodes[i] = new Node(P);
