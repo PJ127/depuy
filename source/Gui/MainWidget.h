@@ -1,0 +1,39 @@
+#pragma once
+
+// Qt
+#include <QWidget>
+#include <QFileDialog>
+
+// Ui
+#include "ui_MainWidget.h"
+
+//------------------------------------------------------------------------------
+namespace gui
+//------------------------------------------------------------------------------
+{
+
+//------------------------------------------------------------------------------
+// class MainWidget
+//------------------------------------------------------------------------------
+
+//! The widget
+class MainWidget : public QWidget, Ui_MainWidget
+{
+	Q_OBJECT
+
+public:
+        MainWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+
+        virtual ~MainWidget();
+
+
+public slots:
+	void accepted();
+
+private:
+	QFileDialog* m_fileDialog;
+};
+
+//------------------------------------------------------------------------------
+}; // namespace gui
+//------------------------------------------------------------------------------

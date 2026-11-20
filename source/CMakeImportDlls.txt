@@ -1,0 +1,16 @@
+# Batch post-process to import all necessary Dlls and files
+
+set (INPUT_PATHS_DLL	${QT_BINARY_DIR}\\QtCore*.dll
+						${QT_BINARY_DIR}\\QtGui*.dll
+						${QT_BINARY_DIR}\\QtOpenGL*.dll)
+
+add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD COMMAND echo Updating Dlls and configuration files... WORKING_DIRECTORY ${GLOBAL_SOURCE_DIR})
+string(REPLACE / \\ clean_dest ${CMAKE_CURRENT_BINARY_DIR}/$(ConfigurationName))
+
+#all other cases
+foreach (input ${INPUT_PATHS_DLL})
+	string(REPLACE / \\ clean_path ${input})
+	add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD COMMAND echo Update: ${clean_path})
+	add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD COMMAND xcopy /d /y /s ${clean_path} ${clean_dest})
+endforeach()
+

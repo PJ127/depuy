@@ -1,0 +1,123 @@
+# Function searches libraries components listed in parameter component_list,
+# both optimized and debug, inside directory in parameter __lib_dir.
+# It searches components one by one, optimized version first inside directories
+#   ${__lib_dir}/release and ${__lib_dir} (in this order)
+# and the debug component (both original name and name with suffix 'd") inside
+#   ${__lib_dir}/debug and ${__lib_dir} (in this order)
+#
+# Output is stored inside variable ${__lib_name}_LIBRARIES:
+#   optimized;component_release;debug;component_debug (if debug found)
+# or
+#   component_release (if no debug found)
+# or nothing if no release found
+
+function( fn_find_external_libs __lib_name __lib_dir )  # + component_list )
+    string( TOUPPER ${__lib_name} lib_name_up )
+    set( __local_list )
+    foreach( component ${ARGN} )
+        string( TOUPPER ${component} component_up )
+        set( component_release "${lib_name_up}_${component_up}_LIBRARY_RELEASE" )
+        set( component_debug "${lib_name_up}_${component_up}_LIBRARY_DEBUG" )
+        unset( ${component_release} CACHE )
+        unset( ${component_debug} CACHE )
+        find_library( ${component_release} NAMES ${component} PATHS ${__lib_dir}/release ${__lib_dir} NO_DEFAULT_PATH )
+        # Do not touch order of arguments below! Search prefix 'd' first in case
+        # release and debug versions are both in the same directory
+        find_library( ${component_debug} NAMES ${component}d ${component} PATHS ${__lib_dir}/debug ${__lib_dir} NO_DEFAULT_PATH )
+        if( "${${component_release}}" STREQUAL "${component_release}-NOTFOUND" )
+            message_warning( "Component '${component}' (release) not found" )
+        else()
+            if( "${${component_debug}}" STREQUAL "${component_debug}-NOTFOUND" )
+                message_warning( "Component '${component}' (debug) not found" )
+                list( APPEND __local_list ${${component_release}} )
+            else()
+                list( APPEND __local_list optimized ${${component_release}} debug ${${component_debug}} )
+            endif()
+        endif()
+    endforeach()
+    set( __out_var_name ${lib_name_up}_LIBRARIES )
+    set( ${__out_var_name} ${__local_list} PARENT_SCOPE )
+endfunction()
+
+
+# ------------------------------------------------------------------------------
+# Grouping
+# ------------------------------------------------------------------------------
+
+function( source_group_custom __remove_until __prefix ) # + input list
+    foreach( source ${ARGN} )
+        string( REGEX REPLACE "^.*${__remove_until}/?" "" group_name ${source} )    # remove until
+        string( REGEX REPLACE "/?[^/]+$" "" group_name ${group_name} )              # remove filename
+        string( REPLACE / \\ group_name "${__prefix}/${group_name}" )
+        source_group( "${group_name}" FILES ${source} )
+    endforeach()
+endfunction()
+
+macro( source_group_headers )   # + input list
+    source_group_custom( ${CMAKE_CURRENT_SOURCE_DIR} "Header Files" ${ARGV} )
+endmacro()
+
+macro( source_group_sources )   # + input list
+    source_group_custom( ${CMAKE_CURRENT_SOURCE_DIR} "Source Files" ${ARGV} )
+endmacro()
+
+macro( source_group_mocs )      # + input list
+    source_group( "Generated Source Files" FILES ${ARGV} )
+endmacro()
+
+# ------------------------------------------------------------------------------
+# Qt helpers
+# ------------------------------------------------------------------------------
+function( find_mocable_files __out_var_name )   # + input list
+    set( local_list )
+    foreach( one_file ${ARGN} )
+        file( READ ${one_file} stream )
+        if( stream MATCHES "Q_OBJECT" )
+            list( APPEND local_list ${one_file} )
+        endif()
+    endforeach()
+    set( ${__out_var_name} ${local_list} PARENT_SCOPE )
+endfunction()
+
+function( exclude_inltpls )     # + input list
+    foreach( one_file ${ARGN} )
+        if( ${one_file} MATCHES "\\.(inl|tpl)\\.cpp$" )
+            set_source_files_properties( ${one_file} PROPERTIES HEADER_FILE_ONLY 1 )
+        endif()
+    endforeach()
+endfunction()
+
+# Repris macro( qt4_wrap_cpp ) depuis FindQt4.cmake
+function( qt4_wrap_cpp_custom __out_varname )   # + input list
+    QT4_GET_MOC_FLAGS(moc_flags)
+    QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+    set( tmp )
+    foreach( it ${moc_files} )
+        get_filename_component( it ${it} ABSOLUTE )
+        get_filename_component( ext ${it} EXT )
+        string( REGEX REPLACE "^\\." "" ext ${ext} )
+        QT4_MAKE_OUTPUT_FILE( ${it} "" ${ext}.moc.cpp outfile )
+        QT4_CREATE_MOC_COMMAND( ${it} ${outfile} "${moc_flags}" "${moc_options}" )
+        list( APPEND tmp ${outfile} )
+    endforeach()
+    set( ${__out_varname} ${tmp} PARENT_SCOPE )
+endfunction()
+
+# Repris macro( qt4_wrap_ui ) depuis FindQt4.cmake
+function( qt4_wrap_ui_custom __out_varname )    # + input list
+    QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
+    set( tmp )
+    foreach( it ${ui_files} )
+        # Generates outputs in the original dir (but in the build tree):
+        QT4_MAKE_OUTPUT_FILE( ${it} ui_ h outfile )
+        add_custom_command( OUTPUT ${outfile}
+            COMMAND ${QT_UIC_EXECUTABLE}
+            ARGS ${ui_options} -o ${outfile} ${it}
+            MAIN_DEPENDENCY ${it} )
+        # Must include directory in build tree
+        get_filename_component( outdir ${outfile} PATH )
+        include_directories( ${outdir} )
+        list( APPEND tmp ${outfile} )
+    endforeach()
+    set( ${__out_varname} ${tmp} PARENT_SCOPE )
+endfunction()
