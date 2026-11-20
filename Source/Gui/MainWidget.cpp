@@ -37,5 +37,6 @@ void gui::MainWidget::accepted()
 	dm::Data::instance()->mesh()->load(m_fileDialog->selectedFiles().first());
 
 	m_glWidget->updateObject();
-	m_glWidget->updateGL();
+	m_glWidget->update();
+	// m_glWidget->updateGL();
 }

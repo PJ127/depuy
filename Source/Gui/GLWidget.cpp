@@ -1,6 +1,6 @@
 //QT
 #include <QtGui>
-#include <QtOpenGL>
+#include <QOpenGLWidget>
 
 // Standard
 #include <math.h>
@@ -9,13 +9,17 @@
 #include "../Data/Data.h"
 #include "../Data/Mesh.h"
 
-#include "glwidget.h"
+#include "GLWidget.h"
 
 //------------------------------------------------------------------------------
 gui::GLWidget::GLWidget(QWidget* parent)
-    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+    : QOpenGLWidget(parent)
 //------------------------------------------------------------------------------
 {
+	QSurfaceFormat format;
+	format.setSamples(4);
+	setFormat(format);
+
 	object = 0;
 
 	xRot = 0;
@@ -53,7 +57,7 @@ void gui::GLWidget::setXTranslation(double translation)
     {
         xTranslation = translation;
         emit xTranlationChanged(xTranslation);
-        updateGL();
+        update();
     }
 }
 
@@ -65,7 +69,7 @@ void gui::GLWidget::setYTranslation(double translation)
     {
         yTranslation = translation;
         emit yTranlationChanged(yTranslation);
-        updateGL();
+        update();
     }
 }
 
@@ -78,7 +82,7 @@ void gui::GLWidget::setXRotation(int angle)
 	{
 		xRot = angle;
 		emit xRotationChanged(angle);
-		updateGL();
+		update();
 	}
 }
 
@@ -91,7 +95,7 @@ void gui::GLWidget::setYRotation(int angle)
 	{
 		yRot = angle;
 		emit yRotationChanged(angle);
-		updateGL();
+		update();
 	}
 }
 

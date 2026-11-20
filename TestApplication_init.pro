@@ -6,7 +6,7 @@ CONFIG +=  debug_and_release
 
 QT += core gui widgets openglwidgets
 
-INCLUDEPATH += $$PWD/source/Gui
+INCLUDEPATH += $$PWD/Source/Gui
 
 SOURCES += Source/App/main.cpp
 SOURCES += Source/Data/Data.cpp

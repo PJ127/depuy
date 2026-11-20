@@ -37,7 +37,7 @@ bool dm::Mesh::load(const QString& p_file)
     QFile file(p_file);
     if (!file.open(QFile::Text | QFile::ReadOnly))
     {
-        qCritical() << "Failed to open file " << p_file << endl;
+        qCritical() << "Failed to open file " << p_file;
         return false;
     }
     QTextStream stream(&file);
@@ -45,7 +45,7 @@ bool dm::Mesh::load(const QString& p_file)
         QString firstLine = stream.readLine();
         if (!firstLine.toUpper().startsWith("SOLID"))
         {
-            qCritical() << "Input file is not an ASCII STL file" << endl;
+            qCritical() << "Input file is not an ASCII STL file";
             return false;
         }
     }
@@ -64,7 +64,7 @@ bool dm::Mesh::load(const QString& p_file)
                     }
                     else if (file.error() != QFile::NoError)
                     {
-                            qCritical() << "An error ocurred while reading the file" << endl;
+                            qCritical() << "An error ocurred while reading the file";
                             return false;
                     }
 

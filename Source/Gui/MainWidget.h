@@ -22,7 +22,7 @@ class MainWidget : public QWidget, Ui_MainWidget
 	Q_OBJECT
 
 public:
-        MainWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+        MainWidget(QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
         virtual ~MainWidget();
 

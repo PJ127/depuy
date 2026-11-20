@@ -26,9 +26,8 @@ public:
 
         dm::Mesh* mesh() { return m_mesh; }
 
-private:
-        Data& operator= (const Data&) {}
-        Data (const Data&) {}
+        Data& operator= (const Data&) = delete;
+        Data (const Data&) = delete;
 
 private:
 	dm::Mesh* m_mesh;
