@@ -132,8 +132,9 @@ void gui::GLWidget::paintGL()
     glRotated(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
 
-    if (object != 0)
+    if (object != 0) {
         glCallList(object);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -166,8 +167,9 @@ void gui::GLWidget::updateObject()
 //------------------------------------------------------------------------------
 {
     makeCurrent();
-    if (object != 0)
+    if (object != 0) {
         glDeleteLists(object, 1);
+    }
     object = 0;
     object = makeObject();
 }
