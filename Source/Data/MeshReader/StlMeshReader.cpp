@@ -1,7 +1,6 @@
 #include "StlMeshReader.h"
 
 #include <QDebug>
-#include <QRegularExpression>
 #include <QStringList>
 #include <QTextStream>
 
@@ -24,105 +23,56 @@ bool dm::StlMeshReader::read(QTextStream &stream, Mesh &mesh)
 
         // 1st line of a 'facet': "facet normal ni nj nk" / or 'endsolid' (i.e.
         // end of file)
-        {
-            QString currentLine = stream.readLine();
-            if (currentLine.isEmpty()) {
-                if (stream.status() != QTextStream::Ok) {
-                    qCritical() << "An error ocurred while reading the file";
-                    return false;
-                }
-                // end of file reached
-                break;
-            }
-
-            QStringList tokens = currentLine.split(QRegularExpression("\\s+"),
-                                                   Qt::SkipEmptyParts);
-            if (tokens.empty()) {
+        QStringList tokens = readTokens(stream);
+        if (tokens.isEmpty()) {
+            if (stream.status() != QTextStream::Ok) {
+                qCritical() << "An error occurred while reading the file";
                 return false;
             }
-            if (tokens[0].toUpper() != "FACET") {
-                if (tokens[0].toUpper() != "ENDSOLID") {
-                    return false;
-                }
-                break;
-            }
-
-            if (tokens.size() >= 5 && tokens[1].toUpper() == "NORMAL") {
-                bool normalIsOk = false;
-                tri.normal[0] = tokens[2].toDouble(&normalIsOk);
-                if (!normalIsOk) {
-                    return false;
-                }
-                tri.normal[1] = tokens[3].toDouble(&normalIsOk);
-                if (!normalIsOk) {
-                    return false;
-                }
-                tri.normal[2] = tokens[4].toDouble(&normalIsOk);
-                if (!normalIsOk) {
-                    return false;
-                }
-            }
+            // end of file reached
+            break;
         }
+        if (tokens[0].toUpper() == "ENDSOLID") {
+            break;
+        }
+        if (tokens[0].toUpper() != "FACET") {
+            return false;
+        }
+
+        Vertex normal;
+        if (!parseVertex(tokens, normal, "facet normal")) {
+            return false;
+        }
+        tri.normal[0] = normal.x;
+        tri.normal[1] = normal.y;
+        tri.normal[2] = normal.z;
 
         // 2nd line: 'outer loop'
-        {
-            QString currentLine = stream.readLine();
-            if (!currentLine.trimmed().toUpper().startsWith("OUTER LOOP")) {
-                return false;
-            }
+        if (readTokens(stream).join(' ').toUpper() != "OUTER LOOP") {
+            return false;
         }
 
-        // 3rd to 5th lines: 'vertex vix viy viz'
+        // 3rd to 5th lines: 'vertex x y z'
         for (unsigned i = 0; i < 3; ++i) {
-            QString currentLine = stream.readLine();
-            if (!currentLine.trimmed().toUpper().startsWith("VERTEX")) {
-                return false;
-            }
-
-            QStringList tokens =
-                currentLine.split(QRegularExpression("\\s+"),
-                                  Qt::SkipEmptyParts);
-            if (tokens.size() < 4) {
-                return false;
-            }
-
             Vertex vertex;
-            {
-                bool vertexIsOk = false;
-                vertex.x = tokens[1].toDouble(&vertexIsOk);
-                if (!vertexIsOk) {
-                    return false;
-                }
-                vertex.y = tokens[2].toDouble(&vertexIsOk);
-                if (!vertexIsOk) {
-                    return false;
-                }
-                vertex.z = tokens[3].toDouble(&vertexIsOk);
-                if (!vertexIsOk) {
-                    return false;
-                }
+            if (!readVertex(stream, vertex, "vertex")) {
+                return false;
             }
-
-            tri.vertices[i] = new Vertex(vertex);
-            mesh.vertices.push_back(tri.vertices[i]);
+            // The mesh owns the vertex; the triangle only refers to it.
+            mesh.vertices.push_back(new Vertex(vertex));
+            tri.vertices[i] = mesh.vertices.back();
         }
 
         mesh.triangles.push_back(tri);
 
         // 6th line: 'endloop'
-        {
-            QString currentLine = stream.readLine();
-            if (!currentLine.trimmed().toUpper().startsWith("ENDLOOP")) {
-                return false;
-            }
+        if (readTokens(stream).join(' ').toUpper() != "ENDLOOP") {
+            return false;
         }
 
         // 7th and last line: 'endfacet'
-        {
-            QString currentLine = stream.readLine();
-            if (!currentLine.trimmed().toUpper().startsWith("ENDFACET")) {
-                return false;
-            }
+        if (readTokens(stream).join(' ').toUpper() != "ENDFACET") {
+            return false;
         }
     }
 

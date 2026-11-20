@@ -11,6 +11,7 @@ INCLUDEPATH += $$PWD/Source/Gui
 SOURCES += Source/App/main.cpp
 SOURCES += Source/Data/Data.cpp
 SOURCES += Source/Data/Mesh.cpp
+SOURCES += Source/Data/MeshReader/MeshReader.cpp
 SOURCES += Source/Data/MeshReader/MeshReaderFactory.cpp
 SOURCES += Source/Data/MeshReader/OffMeshReader.cpp
 SOURCES += Source/Data/MeshReader/StlMeshReader.cpp

@@ -9,7 +9,7 @@ namespace dm {
 //! Parser for ASCII STL meshes
 class StlMeshReader : public MeshReader {
 public:
-    bool read(QTextStream &in, Mesh &mesh) override;
+    bool read(QTextStream &stream, Mesh &mesh) override;
 };
 
 //------------------------------------------------------------------------------

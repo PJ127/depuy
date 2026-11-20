@@ -1,36 +1,17 @@
 #include "OffMeshReader.h"
 
 #include <QDebug>
-#include <QRegularExpression>
 #include <QStringList>
 #include <QTextStream>
 
 #include "../Mesh.h"
 
-namespace {
-
-//! Returns the tokens of the next line that is neither empty nor a comment.
-//! Returns an empty list at the end of the file.
-QStringList nextTokens(QTextStream &in)
-{
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
-        if (line.isEmpty() || line.startsWith('#')) {
-            continue;
-        }
-        return line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-    }
-    return {};
-}
-
-} // namespace
-
 //------------------------------------------------------------------------------
-bool dm::OffMeshReader::read(QTextStream &in, Mesh &mesh)
+bool dm::OffMeshReader::read(QTextStream &stream, Mesh &mesh)
 //------------------------------------------------------------------------------
 {
     {
-        QStringList tokens = nextTokens(in);
+        QStringList tokens = readTokens(stream);
         if (tokens.isEmpty() || tokens[0].toUpper() != "OFF") {
             qCritical() << "Input file is not an OFF file";
             return false;
@@ -38,7 +19,7 @@ bool dm::OffMeshReader::read(QTextStream &in, Mesh &mesh)
     }
 
     // Counts line: nbVertices nbFaces nbEdges
-    QStringList tokens = nextTokens(in);
+    QStringList tokens = readTokens(stream);
     if (tokens.size() != 3) {
         qCritical() << "Second line should contain three numbers";
         return false;
@@ -58,30 +39,17 @@ bool dm::OffMeshReader::read(QTextStream &in, Mesh &mesh)
 
     // One line per vertex: x y z
     for (int iVertex = 0; iVertex < nbVertices; ++iVertex) {
-        tokens = nextTokens(in);
-        if (tokens.size() < 3) {
-            qCritical() << "Vertex" << iVertex << "should contain three numbers";
-            return false;
-        }
-
         Vertex vertex;
-        bool xIsOk = false;
-        bool yIsOk = false;
-        bool zIsOk = false;
-        vertex.x = tokens[0].toDouble(&xIsOk);
-        vertex.y = tokens[1].toDouble(&yIsOk);
-        vertex.z = tokens[2].toDouble(&zIsOk);
-        if (!xIsOk || !yIsOk || !zIsOk) {
-            qCritical() << "Invalid coordinates for vertex" << iVertex;
+        if (!readVertex(stream, vertex)) {
+            qCritical() << "Invalid vertex" << iVertex;
             return false;
         }
-
         mesh.vertices.push_back(new Vertex(vertex));
     }
 
     // One line per face: nbCorners i0 i1 ... (only triangles are supported)
     for (int iFace = 0; iFace < nbFaces; ++iFace) {
-        tokens = nextTokens(in);
+        tokens = readTokens(stream);
         if (tokens.isEmpty()) {
             qCritical() << "Face" << iFace << "is missing";
             return false;
