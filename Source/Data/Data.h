@@ -1,9 +1,8 @@
 #pragma once
 
 // Project
-namespace dm
-{
-	class Mesh;
+namespace dm {
+class Mesh;
 }
 
 // -----------------------------------------------------------------------------
@@ -16,24 +15,22 @@ namespace dm
 //------------------------------------------------------------------------------
 
 //! \brief The data.
-class Data
-{
-public:
-        static Data* instance();
+class Data {
+  public:
+    static Data *instance();
 
-        Data();
-        ~Data() {}
+    Data();
+    ~Data() {}
 
-        dm::Mesh* mesh() { return m_mesh; }
+    dm::Mesh *mesh() { return m_mesh; }
 
-        Data& operator= (const Data&) = delete;
-        Data (const Data&) = delete;
+    Data &operator=(const Data &) = delete;
+    Data(const Data &) = delete;
 
-private:
-	dm::Mesh* m_mesh;
+  private:
+    dm::Mesh *m_mesh;
 };
 
 // -----------------------------------------------------------------------------
 }; // namespace dm
 // -----------------------------------------------------------------------------
-

@@ -10,13 +10,13 @@
 int main(int argc, char *argv[])
 //---------------------------------------------------------------------------------
 {
-	QApplication app(argc, argv, true);
+    QApplication app(argc, argv, true);
 
-	// Create DataBase
+    // Create DataBase
     dm::Data::instance();
 
-	gui::MainWidget* mainWidget = new gui::MainWidget();
-	mainWidget->show();
+    gui::MainWidget *mainWidget = new gui::MainWidget();
+    mainWidget->show();
 
-	return app.exec();
+    return app.exec();
 }
