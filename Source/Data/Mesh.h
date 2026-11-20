@@ -1,17 +1,11 @@
 #pragma once
 
-// Standard
 #include <vector>
 
-// QT
 #include <QString>
 
 //------------------------------------------------------------------------------
 namespace dm {
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// struct Node
 //------------------------------------------------------------------------------
 
 //! Vertex
@@ -21,11 +15,6 @@ struct Node {
     double coo[3];
 };
 
-//------------------------------------------------------------------------------
-// struct Triangle
-//------------------------------------------------------------------------------
-
-//! Triangle
 struct Triangle {
     Triangle() {
         normal[0] = normal[1] = normal[2] = 0.0;
@@ -36,10 +25,6 @@ struct Triangle {
     double normal[3];
 };
 
-//------------------------------------------------------------------------------
-// class mesh
-//------------------------------------------------------------------------------
-
 //! Triangular mesh
 class Mesh {
   public:
@@ -48,11 +33,11 @@ class Mesh {
 
   public:
     //! Loads a STL mesh
-    bool load(const QString &pFile);
+    bool load(const QString &path);
 
   public:
-    std::vector<Triangle> mTriangles;
-    std::vector<Node *> mNodes;
+    std::vector<Triangle> triangles;
+    std::vector<Node *> nodes;
 };
 
 //------------------------------------------------------------------------------

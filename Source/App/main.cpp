@@ -1,8 +1,6 @@
-// Qt
 #include <QApplication>
 #include <QDir>
 
-// Project
 #include "../Data/Data.h"
 #include "../Gui/MainWidget.h"
 

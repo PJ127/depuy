@@ -1,11 +1,8 @@
-// QT
 #include <QOpenGLWidget>
 #include <QtGui>
 
-// Standard
 #include <math.h>
 
-// Project
 #include "../Data/Data.h"
 #include "../Data/Mesh.h"
 
@@ -26,7 +23,7 @@ gui::GLWidget::GLWidget(QWidget *parent)
     yRot = 0;
     zRot = 0;
 
-    mScaling = 1.0;
+    scaling = 1.0;
 
     xTranslation = 0;
     yTranslation = 0;
@@ -113,7 +110,6 @@ void gui::GLWidget::initializeGL()
     glDisable(GL_CULL_FACE);
     glEnable(GL_NORMALIZE);
 
-    // glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 }
@@ -127,7 +123,7 @@ void gui::GLWidget::paintGL()
     glLoadIdentity();
 
     glTranslated(xTranslation, -yTranslation, zTranslation);
-    glScalef(mScaling, mScaling, mScaling);
+    glScalef(scaling, scaling, scaling);
     glRotated(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotated(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
@@ -144,16 +140,13 @@ GLuint gui::GLWidget::makeObject()
     GLuint list = glGenLists(1);
     glNewList(list, GL_COMPILE);
 
-    // Draw the coordinate system
     disableLight();
-    drawCoorSyst(100);
+    drawAxes(100);
 
-    // Draw the wireframe
     disableLight();
     glColor3f(0.7f, 0.7f, 0.7f);
     drawWireframe(dm::Data::instance()->mesh());
 
-    // Draw the triangle mesh
     enableLight();
     glColor3f(1.0f, 0.97f, 0.87f);
     drawMesh(dm::Data::instance()->mesh());
@@ -221,7 +214,7 @@ void gui::GLWidget::wheelEvent(QWheelEvent *event)
 {
     double numDegrees = -event->angleDelta().y() / 8.0;
     double numSteps = numDegrees / 15.0;
-    mScaling *= std::pow(1.125, numSteps);
+    scaling *= std::pow(1.125, numSteps);
     update();
 }
 
@@ -257,17 +250,17 @@ void gui::GLWidget::drawBox(const double *bounds)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::drawMesh(const dm::Mesh *pMesh)
+void gui::GLWidget::drawMesh(const dm::Mesh *mesh)
 //------------------------------------------------------------------------------
 {
-    if (!pMesh) {
+    if (!mesh) {
         return;
     }
 
     glBegin(GL_TRIANGLES);
-    size_t nbT = pMesh->mTriangles.size();
+    size_t nbT = mesh->triangles.size();
     for (size_t i = 0; i < nbT; i++) {
-        const dm::Triangle &tr = pMesh->mTriangles[i];
+        const dm::Triangle &tr = mesh->triangles[i];
         for (unsigned int s = 0; s < 3; s++) {
             glNormal3dv(tr.normal);
             glVertex3dv(tr.nodes[s]->coo);
@@ -277,16 +270,16 @@ void gui::GLWidget::drawMesh(const dm::Mesh *pMesh)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::drawWireframe(const dm::Mesh *pMesh)
+void gui::GLWidget::drawWireframe(const dm::Mesh *mesh)
 //------------------------------------------------------------------------------
 {
-    if (!pMesh) {
+    if (!mesh) {
         return;
     }
 
-    size_t nbT = pMesh->mTriangles.size();
+    size_t nbT = mesh->triangles.size();
     for (size_t i = 0; i < nbT; i++) {
-        const dm::Triangle &tr = pMesh->mTriangles[i];
+        const dm::Triangle &tr = mesh->triangles[i];
         glBegin(GL_LINE_LOOP);
         glVertex3dv(tr.nodes[0]->coo);
         glVertex3dv(tr.nodes[1]->coo);
@@ -296,22 +289,22 @@ void gui::GLWidget::drawWireframe(const dm::Mesh *pMesh)
 }
 
 //------------------------------------------------------------------------------
-void gui::GLWidget::drawCoorSyst(const int pSize)
+void gui::GLWidget::drawAxes(const int axisLength)
 //------------------------------------------------------------------------------
 {
     glBegin(GL_LINES);
 
     glColor3f(1.f, 0.f, 0.f);
     glVertex3d(0., 0., 0.);
-    glVertex3d(pSize, 0., 0.);
+    glVertex3d(axisLength, 0., 0.);
 
     glColor3f(0.f, 1.f, 0.f);
     glVertex3d(0., 0., 0.);
-    glVertex3d(0., pSize, 0.);
+    glVertex3d(0., axisLength, 0.);
 
     glColor3f(0.f, 0.f, 1.f);
     glVertex3d(0., 0., 0.);
-    glVertex3d(0., 0., pSize);
+    glVertex3d(0., 0., axisLength);
 
     glEnd();
 }

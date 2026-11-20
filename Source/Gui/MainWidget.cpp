@@ -1,24 +1,20 @@
-#include "MainWidget.h" // Header
+#include "MainWidget.h"
 
-// Qt
-
-// Project
 #include "../Data/Data.h"
 #include "../Data/Mesh.h"
 
 //------------------------------------------------------------------------------
-gui::MainWidget::MainWidget(QWidget *parent /* = 0*/,
-                            Qt::WindowFlags f /* = 0*/)
+gui::MainWidget::MainWidget(QWidget *parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 //------------------------------------------------------------------------------
 {
     setupUi(this);
 
-    mFileDialog = new QFileDialog();
-    mFileDialog->hide();
+    fileDialog = new QFileDialog();
+    fileDialog->hide();
 
-    connect(this->mLoadButton, SIGNAL(clicked()), mFileDialog, SLOT(show()));
-    connect(mFileDialog, SIGNAL(accepted()), this, SLOT(accepted()));
+    connect(this->loadButton, SIGNAL(clicked()), fileDialog, SLOT(show()));
+    connect(fileDialog, SIGNAL(accepted()), this, SLOT(accepted()));
 }
 
 //------------------------------------------------------------------------------
@@ -30,9 +26,8 @@ gui::MainWidget::~MainWidget()
 void gui::MainWidget::accepted()
 //------------------------------------------------------------------------------
 {
-    dm::Data::instance()->mesh()->load(mFileDialog->selectedFiles().first());
+    dm::Data::instance()->mesh()->load(fileDialog->selectedFiles().first());
 
-    mGlWidget->updateObject();
-    mGlWidget->update();
-    // mGlWidget->updateGL();
+    glWidget->updateObject();
+    glWidget->update();
 }

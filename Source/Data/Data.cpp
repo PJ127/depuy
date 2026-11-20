@@ -1,17 +1,16 @@
-#include "Data.h" // Header
+#include "Data.h"
 
-// Qt
 #include <QSharedPointer>
 
 #include "../Data/Mesh.h"
 
-QSharedPointer<dm::Data> sInstance = 0;
+QSharedPointer<dm::Data> sharedInstance = 0;
 
-dm::Data::Data() : mMesh(0) { mMesh = new dm::Mesh(); }
+dm::Data::Data() : currentMesh(0) { currentMesh = new dm::Mesh(); }
 
 dm::Data *dm::Data::instance() {
-    if (!sInstance) {
-        sInstance.reset(new Data);
+    if (!sharedInstance) {
+        sharedInstance.reset(new Data);
     }
-    return sInstance.data();
+    return sharedInstance.data();
 }

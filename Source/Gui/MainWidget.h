@@ -1,20 +1,14 @@
 #pragma once
 
-// Qt
 #include <QFileDialog>
 #include <QWidget>
 
-// Ui
 #include "ui_MainWidget.h"
 
 //------------------------------------------------------------------------------
 namespace gui
 //------------------------------------------------------------------------------
 {
-
-//------------------------------------------------------------------------------
-// class MainWidget
-//------------------------------------------------------------------------------
 
 //! The widget
 class MainWidget : public QWidget, Ui_MainWidget {
@@ -29,7 +23,7 @@ class MainWidget : public QWidget, Ui_MainWidget {
     void accepted();
 
   private:
-    QFileDialog *mFileDialog;
+    QFileDialog *fileDialog;
 };
 
 //------------------------------------------------------------------------------

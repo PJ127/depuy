@@ -1,15 +1,10 @@
-#include "Mesh.h" // Header
+#include "Mesh.h"
 
-// QT
 #include <QDebug>
 #include <QFile>
 #include <QRegularExpression>
 #include <QStringList>
 #include <QTextStream>
-
-//------------------------------------------------------------------------------
-// class Mesh
-//------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------
 dm::Mesh::Mesh()
@@ -20,20 +15,20 @@ dm::Mesh::Mesh()
 dm::Mesh::~Mesh()
 //-----------------------------------------------------------------------------
 {
-    mTriangles.clear();
-    for (size_t i = 0; i < mNodes.size(); ++i) {
-        delete mNodes[i];
+    triangles.clear();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        delete nodes[i];
     }
-    mNodes.clear();
+    nodes.clear();
 }
 
 //-----------------------------------------------------------------------------
-bool dm::Mesh::load(const QString &pFile)
+bool dm::Mesh::load(const QString &path)
 //-----------------------------------------------------------------------------
 {
-    QFile file(pFile);
+    QFile file(path);
     if (!file.open(QFile::Text | QFile::ReadOnly)) {
-        qCritical() << "Failed to open file " << pFile;
+        qCritical() << "Failed to open file " << path;
         return false;
     }
     QTextStream stream(&file);
@@ -70,7 +65,6 @@ bool dm::Mesh::load(const QString &pFile)
             }
 
             if (tokens.size() >= 5 && tokens[1].toUpper() == "NORMAL") {
-                // read the normal
                 bool normalIsOk = false;
                 tri.normal[0] = tokens[2].toDouble(&normalIsOk);
                 if (!normalIsOk) {
@@ -84,15 +78,6 @@ bool dm::Mesh::load(const QString &pFile)
                 if (!normalIsOk) {
                     return false;
                 }
-                // double norm = sqrt(tri.normal[0]*tri.normal[0] +
-                // tri.normal[1]*tri.normal[1] + tri.normal[2]*tri.normal[2]);
-                // qDebug() << norm << endl;
-                // if (norm != 0)
-                //{
-                //     tri.normal[0] /= norm;
-                //     tri.normal[1] /= norm;
-                //     tri.normal[2] /= norm;
-                // }
             }
         }
 
@@ -124,7 +109,6 @@ bool dm::Mesh::load(const QString &pFile)
                 return false;
             }
 
-            // read vertex
             Node P;
             {
                 bool vertexIsOk = false;
@@ -143,11 +127,10 @@ bool dm::Mesh::load(const QString &pFile)
             }
 
             tri.nodes[i] = new Node(P);
-            mNodes.push_back(tri.nodes[i]);
+            nodes.push_back(tri.nodes[i]);
         }
 
-        // add the new triangle
-        mTriangles.push_back(tri);
+        triangles.push_back(tri);
 
         // 6th line: 'endloop'
         {
@@ -172,8 +155,8 @@ bool dm::Mesh::load(const QString &pFile)
         }
     }
 
-    mTriangles.shrink_to_fit();
-    mNodes.shrink_to_fit();
+    triangles.shrink_to_fit();
+    nodes.shrink_to_fit();
 
     return true;
 }

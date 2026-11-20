@@ -1,6 +1,5 @@
 #pragma once
 
-// Qt
 #include <QOpenGLWidget>
 
 namespace dm {
@@ -50,7 +49,7 @@ class GLWidget : public QOpenGLWidget {
     double yTranslation;
     double zTranslation;
 
-    double mScaling;
+    double scaling;
 
     QPoint clickedPos;
     QPoint lastPos;
@@ -58,9 +57,9 @@ class GLWidget : public QOpenGLWidget {
     GLuint object;
 
   private:
-    void drawCoorSyst(const int pSize);
-    void drawWireframe(const dm::Mesh *pMesh);
-    void drawMesh(const dm::Mesh *pMesh);
+    void drawAxes(const int axisLength);
+    void drawWireframe(const dm::Mesh *mesh);
+    void drawMesh(const dm::Mesh *mesh);
     void drawBox(const double *bounds);
     GLuint makeObject();
 

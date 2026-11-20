@@ -1,6 +1,5 @@
 #pragma once
 
-// Project
 namespace dm {
 class Mesh;
 }
@@ -10,10 +9,6 @@ namespace dm
 // -----------------------------------------------------------------------------
 {
 
-//------------------------------------------------------------------------------
-// class Data
-//------------------------------------------------------------------------------
-
 //! \brief The data.
 class Data {
   public:
@@ -22,13 +17,13 @@ class Data {
     Data();
     ~Data() {}
 
-    dm::Mesh *mesh() { return mMesh; }
+    dm::Mesh *mesh() { return currentMesh; }
 
     Data &operator=(const Data &) = delete;
     Data(const Data &) = delete;
 
   private:
-    dm::Mesh *mMesh;
+    dm::Mesh *currentMesh;
 };
 
 // -----------------------------------------------------------------------------
