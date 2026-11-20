@@ -239,7 +239,8 @@ void gui::GLWidget::drawMesh(const dm::Mesh *mesh)
         const dm::Triangle &tr = mesh->triangles[i];
         for (unsigned int s = 0; s < 3; s++) {
             glNormal3dv(tr.normal);
-            glVertex3dv(tr.nodes[s]->coo);
+            const dm::Vertex *v = tr.vertices[s];
+            glVertex3d(v->x, v->y, v->z);
         }
     }
     glEnd();
@@ -257,9 +258,10 @@ void gui::GLWidget::drawWireframe(const dm::Mesh *mesh)
     for (size_t i = 0; i < nbT; i++) {
         const dm::Triangle &tr = mesh->triangles[i];
         glBegin(GL_LINE_LOOP);
-        glVertex3dv(tr.nodes[0]->coo);
-        glVertex3dv(tr.nodes[1]->coo);
-        glVertex3dv(tr.nodes[2]->coo);
+        for (unsigned int s = 0; s < 3; s++) {
+            const dm::Vertex *v = tr.vertices[s];
+            glVertex3d(v->x, v->y, v->z);
+        }
         glEnd();
     }
 }

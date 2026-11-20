@@ -16,10 +16,10 @@ dm::Mesh::~Mesh()
 //-----------------------------------------------------------------------------
 {
     triangles.clear();
-    for (size_t i = 0; i < nodes.size(); ++i) {
-        delete nodes[i];
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        delete vertices[i];
     }
-    nodes.clear();
+    vertices.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,25 +109,25 @@ bool dm::Mesh::load(const QString &path)
                 return false;
             }
 
-            Node P;
+            Vertex vertex;
             {
                 bool vertexIsOk = false;
-                P.coo[0] = tokens[1].toDouble(&vertexIsOk);
+                vertex.x = tokens[1].toDouble(&vertexIsOk);
                 if (!vertexIsOk) {
                     return false;
                 }
-                P.coo[1] = tokens[2].toDouble(&vertexIsOk);
+                vertex.y = tokens[2].toDouble(&vertexIsOk);
                 if (!vertexIsOk) {
                     return false;
                 }
-                P.coo[2] = tokens[3].toDouble(&vertexIsOk);
+                vertex.z = tokens[3].toDouble(&vertexIsOk);
                 if (!vertexIsOk) {
                     return false;
                 }
             }
 
-            tri.nodes[i] = new Node(P);
-            nodes.push_back(tri.nodes[i]);
+            tri.vertices[i] = new Vertex(vertex);
+            vertices.push_back(tri.vertices[i]);
         }
 
         triangles.push_back(tri);
@@ -156,7 +156,7 @@ bool dm::Mesh::load(const QString &path)
     }
 
     triangles.shrink_to_fit();
-    nodes.shrink_to_fit();
+    vertices.shrink_to_fit();
 
     return true;
 }

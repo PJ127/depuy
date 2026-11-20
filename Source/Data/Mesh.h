@@ -8,20 +8,22 @@
 namespace dm {
 //------------------------------------------------------------------------------
 
-//! Vertex
-struct Node {
-    Node() { coo[0] = coo[1] = coo[2] = 0.0; }
+//! Vertex (3D point)
+struct Vertex {
+    Vertex() : x(0.0), y(0.0), z(0.0) {}
 
-    double coo[3];
+    double x;
+    double y;
+    double z;
 };
 
 struct Triangle {
     Triangle() {
         normal[0] = normal[1] = normal[2] = 0.0;
-        nodes[0] = nodes[1] = nodes[2] = nullptr;
+        vertices[0] = vertices[1] = vertices[2] = nullptr;
     }
 
-    Node *nodes[3];
+    Vertex *vertices[3];
     double normal[3];
 };
 
@@ -37,7 +39,7 @@ public:
 
 public:
     std::vector<Triangle> triangles;
-    std::vector<Node *> nodes;
+    std::vector<Vertex *> vertices;
 };
 
 //------------------------------------------------------------------------------
