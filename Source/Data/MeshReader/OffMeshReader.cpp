@@ -3,8 +3,36 @@
 #include <QDebug>
 #include <QStringList>
 #include <QTextStream>
-
+#include <iostream>
 #include "../Mesh.h"
+
+namespace dm {
+bool _computeNormal(Triangle &triangle) {
+    const Vertex &a = *triangle.vertices[0];
+    const Vertex &b = *triangle.vertices[1];
+    const Vertex &c = *triangle.vertices[2];
+
+    const double u[3] = {b.x - a.x, b.y - a.y, b.z - a.z};
+    const double v[3] = {b.x - c.x, b.y - c.y, b.z - c.z};
+
+    triangle.normal[0] = u[1] * v[2] - u[2] * v[1];
+    triangle.normal[1] = u[2] * v[0] - u[0] * v[2];
+    triangle.normal[2] = u[0] * v[1] - u[1] * v[0];
+
+    const double length = std::sqrt(triangle.normal[0] * triangle.normal[0] +
+                                    triangle.normal[1] * triangle.normal[1] +
+                                    triangle.normal[2] * triangle.normal[2]);
+    if (length == 0.0) {
+        return false;
+    }
+
+    for (double &n : triangle.normal) {
+        n /= length;
+    }
+
+    return true;
+}
+} // namespace dm
 
 //------------------------------------------------------------------------------
 bool dm::OffMeshReader::read(QTextStream &stream, Mesh &mesh)
@@ -73,6 +101,7 @@ bool dm::OffMeshReader::read(QTextStream &stream, Mesh &mesh)
             }
             triangle.vertices[iCorner] = mesh.vertices[index];
         }
+        _computeNormal(triangle);
 
         mesh.triangles.push_back(triangle);
     }
